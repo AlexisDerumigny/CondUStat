@@ -1,0 +1,16 @@
+Package: CondUStat
+Type: Package
+Title: Computation of conditional U-statistics
+Version: 0.1.0
+Authors@R: c(
+    person("Alexis", "Derumigny",, email = "a.f.f.derumigny@tudelft.nl", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-6163-8097"))
+  )
+Description: Provides functions for the computation of (kernel-based) conditional U-statistics,
+  including conditional mean, variance, skewness and kurtosis.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Depends: 
+	R (>= 3.6.0)
