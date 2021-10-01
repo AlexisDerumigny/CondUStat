@@ -1,6 +1,6 @@
 
 
-#' Computation of a conditional U-statistics by kernel smoothing
+#' Computation of a univariate conditional U-statistics by kernel smoothing
 #'
 #'
 #' @param datax the vector of observed X values.
@@ -11,6 +11,9 @@
 #' @param p the degree of the U-statistic given by FUN.
 #' @param x0 the point at which the U-statistic should be computed.
 #' @param h the bandwidth of the kernel smoothing.
+#'
+#' @param cutoff value above which the centered observations (X - x0)/h
+#' have no influence.
 #'
 #' @examples
 #' n = 500
@@ -27,7 +30,7 @@
 #'   x0 = c(x0,x0), h = h)
 #'
 #' @export
-cond.UStat <- function(datax, datay, FUN, p, x0, h)
+cond.UStat.univ <- function(datax, datay, FUN, p, x0, h, cutoff = 8)
 {
   stopifnot(length(datax) == length(datay),
             length(x0) == p)
@@ -38,8 +41,8 @@ cond.UStat <- function(datax, datay, FUN, p, x0, h)
     {
       # p = 1
       scaled_x = abs( (datax - x0) / h )
-      relevant_x = which( scaled_x < 5 )
-      reduced_x = datax[relevant_x]
+      relevant_x = which( scaled_x < cutoff )
+      reduced_x = scaled_x[relevant_x]
       reduced_y = datay[relevant_x]
 
       weights_ = exp( - reduced_x)
@@ -51,11 +54,11 @@ cond.UStat <- function(datax, datay, FUN, p, x0, h)
       # p = 2
       scaled_x1 = abs( (datax - x0[1]) / h )
       scaled_x2 = abs( (datax - x0[2]) / h )
-      relevant_x1 = which( scaled_x1 < 5 )
-      reduced_x1 = datax[relevant_x1]
+      relevant_x1 = which( scaled_x1 < cutoff )
+      reduced_x1 = scaled_x[relevant_x1]
       reduced_y1 = datay[relevant_x1]
-      relevant_x2 = which( scaled_x2 < 5 )
-      reduced_x2 = datax[relevant_x2]
+      relevant_x2 = which( scaled_x2 < cutoff )
+      reduced_x2 = scaled_x[relevant_x2]
       reduced_y2 = datay[relevant_x2]
 
       expandX = expand.grid(x1 = reduced_x1, x2 = reduced_x2)
@@ -71,13 +74,13 @@ cond.UStat <- function(datax, datay, FUN, p, x0, h)
       scaled_x1 = abs( (datax - x0[1]) / h )
       scaled_x2 = abs( (datax - x0[2]) / h )
       scaled_x3 = abs( (datax - x0[3]) / h )
-      relevant_x1 = which( scaled_x1 < 5 )
-      reduced_x1 = datax[relevant_x1]
+      relevant_x1 = which( scaled_x1 < cutoff )
+      reduced_x1 = scaled_x[relevant_x1]
       reduced_y1 = datay[relevant_x1]
-      relevant_x2 = which( scaled_x2 < 5 )
-      reduced_x2 = datax[relevant_x2]
+      relevant_x2 = which( scaled_x2 < cutoff )
+      reduced_x2 = scaled_x[relevant_x2]
       reduced_y2 = datay[relevant_x2]
-      relevant_x3 = which( scaled_x3 < 5 )
+      relevant_x3 = which( scaled_x3 < cutoff )
       reduced_x3 = datax[relevant_x3]
       reduced_y3 = datay[relevant_x3]
 
@@ -95,17 +98,17 @@ cond.UStat <- function(datax, datay, FUN, p, x0, h)
       scaled_x2 = abs( (datax - x0[2]) / h )
       scaled_x3 = abs( (datax - x0[3]) / h )
       scaled_x4 = abs( (datax - x0[4]) / h )
-      relevant_x1 = which( scaled_x1 < 5 )
-      reduced_x1 = datax[relevant_x1]
+      relevant_x1 = which( scaled_x1 < cutoff )
+      reduced_x1 = scaled_x[relevant_x1]
       reduced_y1 = datay[relevant_x1]
-      relevant_x2 = which( scaled_x2 < 5 )
-      reduced_x2 = datax[relevant_x2]
+      relevant_x2 = which( scaled_x2 < cutoff )
+      reduced_x2 = scaled_x[relevant_x2]
       reduced_y2 = datay[relevant_x2]
-      relevant_x3 = which( scaled_x3 < 5 )
-      reduced_x3 = datax[relevant_x3]
+      relevant_x3 = which( scaled_x3 < cutoff )
+      reduced_x3 = scaled_x[relevant_x3]
       reduced_y3 = datay[relevant_x3]
-      relevant_x4 = which( scaled_x4 < 5 )
-      reduced_x4 = datax[relevant_x4]
+      relevant_x4 = which( scaled_x4 < cutoff )
+      reduced_x4 = scaled_x[relevant_x4]
       reduced_y4 = datay[relevant_x4]
 
       expandX = expand.grid(
@@ -116,8 +119,11 @@ cond.UStat <- function(datax, datay, FUN, p, x0, h)
       weights_ = exp( - (expandX$x1 + expandX$x2 + expandX$x3 + expandX$x4) )
       results_FUN = FUN(y1 = expandY$y1, y2 = expandY$y2, y3 = expandY$y3, y4 = expandY$y4)
       result = sum( weights_ * results_FUN) / sum(weights_)
-    }
+    },
 
+    {
+      stop("p>4 not implemented in cond.UStat.univ")
+    }
   )
 
   return(result)

@@ -7,15 +7,17 @@
 cond.var(datax, datay, x0, h, condmean = NULL)
 }
 \arguments{
-\item{datax}{the vector of observed X values.}
+\item{datax}{the vector of observed X values (conditioning variable).}
 
-\item{datay}{the vector of observed Y values. Must have the same length as \code{datax}}
+\item{datay}{the vector of observed Y values (conditioned variable).
+Must have the same length as \code{datax}}
 
 \item{x0}{the point at which the U-statistic should be computed.}
 
 \item{h}{the bandwidth of the kernel smoothing.}
 
-\item{condmean}{value of the conditional mean (if know or estimated previously).}
+\item{condmean}{value of the conditional mean of y at x=x0
+(if known or estimated previously).}
 }
 \description{
 Conditional variance estimation by kernel smoothing

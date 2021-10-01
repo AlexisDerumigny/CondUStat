@@ -7,13 +7,18 @@
 cond.mean(datax, datay, x0, h)
 }
 \arguments{
-\item{datax}{the vector of observed X values.}
+\item{datax}{vector or matrix of observed X values (conditioning variables).}
 
-\item{datay}{the vector of observed Y values. Must have the same length as \code{datax}}
+\item{datay}{vector or matrix of observed Y values (conditioned variables).
+Must have the same number of observations as \code{datax}}
 
-\item{x0}{the point at which the U-statistic should be computed.}
+\item{x0}{point at which the U-statistic should be computed.}
 
 \item{h}{the bandwidth of the kernel smoothing.}
+}
+\value{
+a vector having \code{NROW(datay)} entries with the conditional mean
+of the corresponding variables.
 }
 \description{
 Conditional mean estimation by kernel smoothing

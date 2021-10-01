@@ -14,8 +14,10 @@ Package CondUStat
 
 * `cond.kurtosis`: estimation of a conditional kurtosis by kernel smoothing.
 
+* `cond.cov`: estimation of the conditional covariance matrix by kernel smoothing.
+
 
 **Other functions**
 
-* `cond.UStat`: estimation of a (general) conditional U-statistic by kernel smoothing.
+* `cond.UStat.univ`: estimation of a (general) univariate conditional U-statistic by kernel smoothing.
 
