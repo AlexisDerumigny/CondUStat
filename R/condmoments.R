@@ -19,6 +19,15 @@
 #' h = 0.2
 #' cond.mean(datax = datax, datay = datay, x0 = x0, h = h)
 #'
+# # Test
+# datax = c(2,5)
+# datay = c(1,6)
+# x0 = 1
+# h = 1
+# cond.mean(datax = datax, datay = datay, x0 = x0, h = 1)
+# ( 1 * exp(-(2 - 1)^2) + 6 * exp(-(5 - 1)^2) )/ (exp(-(2 - 1)^2) + exp(-(5 - 1)^2))
+#'
+#'
 #' @export
 cond.mean <- function(datax, datay, x0, h)
 {
@@ -68,12 +77,18 @@ cond.mean <- function(datax, datay, x0, h)
 #' h = 1
 #'
 #' result = cond.mean.internal(datax, datay, x0, h)
+#' weighted.mean(datay[,1], weights_) # Testing
 #'
 #' @noRd
 cond.mean.internal <- function(datax, datay, x0, h)
 {
-  scaled_x = abs( sweep(x = datax, MARGIN = 2, STATS = x0) / h )
-  weights_ = exp(- rowSums(scaled_x))
+  if (is.matrix(datax)){
+    scaled_x = abs( sweep(x = datax, MARGIN = 2, STATS = x0) / h )
+    weights_ = exp(- rowSums(scaled_x^2))
+  } else {
+    scaled_x = abs( (datax - x0) / h )
+    weights_ = exp(- scaled_x^2)
+  }
   weights_ = weights_ / sum(weights_)
   result = matrix(weights_, nrow = 1) %*% datay
 
