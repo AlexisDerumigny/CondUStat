@@ -114,8 +114,17 @@ cond.mean.internal <- function(datax, datay, x0, h)
 #' h = 0.2
 #' cond.var(datax = datax, datay = datay, x0 = x0, h = h)
 #'
+# # Test
+# datax = c(2,5)
+# datay = c(1,6)
+# x0 = 1
+# h = 1
+# cond.var(datax = datax, datay = datay, x0 = x0, h = 1, condmean = 0)
+# ( (1-0)^2 * exp(-(2 - 1)^2) + (6-0)^2 * exp(-(5 - 1)^2) ) / (exp(-(2 - 1)^2) + exp(-(5 - 1)^2))
+#'
+#'
 #' @export
-cond.var <- function(datax, datay, x0, h, condmean = NULL)
+cond.var <- function(datax, datay, x0, h, condmean = NULL, cutoff = 8)
 {
   if (is.null(condmean)){
     condmean = cond.mean(datax = datax, datay = datay, x0 = x0, h = h)
@@ -124,7 +133,7 @@ cond.var <- function(datax, datay, x0, h, condmean = NULL)
   result = cond.UStat.univ(
     datax = datax, datay = datay,
     FUN = function(y1){return( (y1 - condmean)^2 ) }, p=1,
-    x0 = x0, h = h)
+    x0 = x0, h = h, cutoff = cutoff)
 
   # Equivalent possibility, but longer:
   # result = cond.UStat(
