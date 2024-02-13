@@ -32,7 +32,7 @@
 #' @export
 cond.UStat.univ <- function(datax, datay, FUN, p, x0, h, cutoff = 8)
 {
-  stopifnot(length(datax) == length(datay),
+  stopifnot(NROW(datax) == NROW(datay),
             length(x0) == p)
 
   switch(
@@ -45,7 +45,7 @@ cond.UStat.univ <- function(datax, datay, FUN, p, x0, h, cutoff = 8)
       reduced_x = scaled_x[relevant_x]
       reduced_y = datay[relevant_x]
 
-      weights_ = exp( - reduced_x)
+      weights_ = exp( - reduced_x^2)
       results_FUN = FUN(y1 = reduced_y)
       result = sum( weights_ * results_FUN) / sum(weights_)
     },
@@ -54,18 +54,20 @@ cond.UStat.univ <- function(datax, datay, FUN, p, x0, h, cutoff = 8)
       # p = 2
       scaled_x1 = abs( (datax - x0[1]) / h )
       scaled_x2 = abs( (datax - x0[2]) / h )
+      
       relevant_x1 = which( scaled_x1 < cutoff )
-      reduced_x1 = scaled_x[relevant_x1]
+      reduced_x1 = scaled_x1[relevant_x1]
       reduced_y1 = datay[relevant_x1]
+      
       relevant_x2 = which( scaled_x2 < cutoff )
-      reduced_x2 = scaled_x[relevant_x2]
+      reduced_x2 = scaled_x2[relevant_x2]
       reduced_y2 = datay[relevant_x2]
 
-      expandX = expand.grid(x1 = reduced_x1, x2 = reduced_x2)
-      expandY = expand.grid(y1 = reduced_y1, y2 = reduced_y2)
+      expandX = expand.grid(reduced_x1, reduced_x2)
+      expandY = expand.grid(reduced_y1, reduced_y2)
 
-      weights_ = exp( - (expandX$x1 + expandX$x2) )
-      results_FUN = FUN(y1 = expandY$y1, y2 = expandY$y2)
+      weights_ = exp( - (expandX$Var1^2 + expandX$Var2^2) )
+      results_FUN = FUN(y1 = expandY$Var1, y2 = expandY$Var2)
       result = sum( weights_ * results_FUN) / sum(weights_)
     },
 
@@ -87,7 +89,7 @@ cond.UStat.univ <- function(datax, datay, FUN, p, x0, h, cutoff = 8)
       expandX = expand.grid(x1 = reduced_x1, x2 = reduced_x2, x3 = reduced_x3)
       expandY = expand.grid(y1 = reduced_y1, y2 = reduced_y2, y3 = reduced_y3)
 
-      weights_ = exp( - (expandX$x1 + expandX$x2 + expandX$x3) )
+      weights_ = exp( - (expandX$x1^2 + expandX$x2^2 + expandX$x3^2) )
       results_FUN = FUN(y1 = expandY$y1, y2 = expandY$y2, y3 = expandY$y3)
       result = sum( weights_ * results_FUN) / sum(weights_)
     },
@@ -116,7 +118,7 @@ cond.UStat.univ <- function(datax, datay, FUN, p, x0, h, cutoff = 8)
       expandY = expand.grid(
         y1 = reduced_y1, y2 = reduced_y2, y3 = reduced_y3, y4 = reduced_y4)
 
-      weights_ = exp( - (expandX$x1 + expandX$x2 + expandX$x3 + expandX$x4) )
+      weights_ = exp( - (expandX$x1^2 + expandX$x2^2 + expandX$x3^2 + expandX$x4^2) )
       results_FUN = FUN(y1 = expandY$y1, y2 = expandY$y2, y3 = expandY$y3, y4 = expandY$y4)
       result = sum( weights_ * results_FUN) / sum(weights_)
     },
