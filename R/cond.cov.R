@@ -47,6 +47,18 @@
 #' print(condcov)
 #' print(cov(datay))
 #'
+#'
+# # Test
+# datax = c(2,5)
+# datay = cbind(c(1,6), c(2,7))
+# x0 = 1
+# h = 1
+# cond.cov(datax = datax, datay = datay, x0 = x0, h = 1, condmean = c(0,0))
+# ( (1-0)*(2-0) * exp(-(2 - 1)^2) + (6-0)*(7-0) * exp(-(5 - 1)^2)
+# ) / (exp(-(2 - 1)^2) + exp(-(5 - 1)^2))
+#'
+#' @export
+#'
 cond.cov <- function(datax, datay, x0, h, condmean = NULL)
 {
   # Test of compatibility for the dimensions
@@ -72,16 +84,28 @@ cond.cov <- function(datax, datay, x0, h, condmean = NULL)
     weights_ = result$weights_
   } else {
     if(NCOL(datay) != length(condmean)){
-      stop("condmean should have a length equal as the number of columns in datay.")
+      stop("condmean should have a length equal to the number of columns in datay.")
     }
 
     scaled_x = abs( sweep(x = datax, MARGIN = 2, STATS = x0) / h )
-    weights_ = exp( - rowSums(scaled_x))
+    weights_ = exp( - rowSums(scaled_x^2))
     weights_ = weights_ / sum(weights_)
   }
 
-  condcov = cov.wt(x = datay, wt = weights_, center = condmean)
-  return(condcov$cov)
+  normalizedy = sweep(x = datay, MARGIN = 2, STATS = condmean)
+
+  condcov = matrix(ncol = NCOL(datay), nrow = NCOL(datay))
+
+  for (i in 1:NCOL(datay)){
+    for (j in 1:i){
+
+      condcov[i,j] = sum( weights_ * normalizedy[,i] * normalizedy[,j] ) / sum(weights_)
+
+      condcov[j,i] <- condcov[i,j]
+    }
+  }
+
+  return(condcov)
 }
 
 

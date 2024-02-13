@@ -4,7 +4,7 @@
 \alias{cond.var}
 \title{Conditional variance estimation by kernel smoothing}
 \usage{
-cond.var(datax, datay, x0, h, condmean = NULL)
+cond.var(datax, datay, x0, h, condmean = NULL, cutoff = 8)
 }
 \arguments{
 \item{datax}{the vector of observed X values (conditioning variable).}
