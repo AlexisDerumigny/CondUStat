@@ -132,7 +132,7 @@ cond.var <- function(datax, datay, x0, h, condmean = NULL, cutoff = 8)
 
   result = cond.UStat.univ(
     datax = datax, datay = datay,
-    FUN = function(y1){return( (y1 - condmean)^2 ) }, p=1,
+    FUN = function(y1){return( ( y1 - rep(condmean, length(y1)) )^2 ) }, p=1,
     x0 = x0, h = h, cutoff = cutoff)
 
   # Equivalent possibility, but longer:
@@ -170,7 +170,7 @@ cond.skewness <- function(datax, datay, x0, h, condmean = NULL)
 
   moment3 = cond.UStat.univ(
     datax = datax, datay = datay,
-    FUN = function(y1){return( (y1 - condmean)^3 ) }, p=1,
+    FUN = function(y1){return( (y1 - rep(condmean, length(y1)))^3 ) }, p=1,
     x0 = x0, h = h)
 
   # moment3 = cond.UStat(
@@ -211,7 +211,7 @@ cond.kurtosis <- function(datax, datay, x0, h, condmean = NULL)
 
   moment4 = cond.UStat.univ(
     datax = datax, datay = datay,
-    FUN = function(y1){return( (y1 - condmean)^4 ) }, p=1,
+    FUN = function(y1){return( (y1 - rep(condmean, length(y1)))^4 ) }, p=1,
     x0 = x0, h = h)
 
   # moment4 = cond.UStat.univ(
